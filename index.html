@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Wash Booking System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚗 Car Wash Booking System</h1>
+            <p>Book your car wash service easily and conveniently</p>
+            <button id="settingsBtn" class="btn settings-btn">⚙️ Service Settings</button>
+        </header>
+
+        <!-- Booking Form -->
+        <section class="form-section">
+            <h2 id="formTitle">Service Scheduling & Booking</h2>
+            <form id="bookingForm">
+                <input type="hidden" id="editIndex">
+                
+                <div class="form-group">
+                    <label for="ownerName">Customer / Assigned Washer Name</label>
+                    <input type="text" id="ownerName" placeholder="Enter name" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookingDate">Date Booked</label>
+                        <input type="date" id="bookingDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="startTime">Start Time</label>
+                        <input type="time" id="startTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endTime">⏰ Est. Time Completed</label>
+                        <input type="time" id="endTime" readonly>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="referenceId">Booking Reference ID</label>
+                    <input type="text" id="referenceId" placeholder="Auto-generated">
+                    <button type="button" id="genRefBtn" class="gen-btn">Generate ID</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="vehicleDetails">Vehicle Details (Model, Plate No., Color)</label>
+                    <textarea id="vehicleDetails" rows="3" placeholder="e.g. Toyota Vios, ABC-1234, White" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="serviceType">Type of Service</label>
+                    <select id="serviceType" required>
+                        <!-- Services load from settings -->
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="totalAmount">Total Amount (₱)</label>
+                        <input type="number" id="totalAmount" step="0.01" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentStatus">Payment Status</label>
+                        <select id="paymentStatus">
+                            <option value="Unpaid">Unpaid</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Partial">Partial Payment</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Service Status</label>
+                    <div class="status-options">
+                        <label><input type="radio" name="serviceStatus" value="Pending" checked> Pending</label>
+                        <label><input type="radio" name="serviceStatus" value="In Progress"> In Progress</label>
+                        <label><input type="radio" name="serviceStatus" value="Completed"> Completed</label>
+                        <label><input type="radio" name="serviceStatus" value="Cancelled"> Cancelled</label>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn primary-btn">💾 Save Booking</button>
+                    <button type="button" id="cancelEdit" class="btn cancel-btn" style="display:none;">❌ Cancel Edit</button>
+                    <button type="reset" class="btn reset-btn">🗑️ Clear Form</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Records Table -->
+        <section class="records-section">
+            <h2>Booking Records</h2>
+            <div class="table-wrapper">
+                <table id="recordsTable">
+                    <thead>
+                        <tr>
+                            <th>Ref ID</th>
+                            <th>Name</th>
+                            <th>Vehicle</th>
+                            <th>Service</th>
+                            <th>Date</th>
+                            <th>Start</th>
+                            <th>Est. End</th>
+                            <th>Amount</th>
+                            <th>Payment</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recordsBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div id="receiptModal" class="modal">
+        <div class="receipt-content">
+            <span class="close-btn">&times;</span>
+            <div id="receiptBody"></div>
+            <button onclick="printReceipt()" class="btn primary-btn">🖨️ Print Receipt</button>
+        </div>
+    </div>
+
+    <!-- ⚙️ SERVICE SETTINGS MODAL -->
+    <div id="settingsModal" class="modal">
+        <div class="settings-content">
+            <span class="close-btn">&times;</span>
+            <h2>⚙️ Manage Services & Prices</h2>
+            <p class="note">Add, edit, or change prices & duration of services. Changes will apply to new bookings only.</p>
+            
+            <div id="serviceList"></div>
+            
+            <div class="add-service-form">
+                <h3>➕ Add / Edit Service</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Service Name</label>
+                        <input type="text" id="svcName" placeholder="e.g. Interior Cleaning">
+                    </div>
+                    <div class="form-group">
+                        <label>Duration (Minutes)</label>
+                        <input type="number" id="svcMins" placeholder="e.g. 30">
+                    </div>
+                    <div class="form-group">
+                        <label>Price (₱)</label>
+                        <input type="number" id="svcPrice" placeholder="e.g. 200">
+                    </div>
+                </div>
+                <input type="hidden" id="svcEditIndex">
+                <div class="btn-group">
+                    <button id="saveServiceBtn" class="btn primary-btn">💾 Save Service</button>
+                    <button id="clearServiceBtn" class="btn reset-btn">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+<!-- </html> -->
